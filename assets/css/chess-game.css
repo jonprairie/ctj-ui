@@ -1,0 +1,81 @@
+.white-perspective {}
+
+.black-perspective {
+    transform: rotate(180deg);
+}
+
+.white-perspective .black.k {
+    background-image: url(../pieces/0/CHESS_kdt45.svg);
+}
+.white-perspective .black.q {
+    background-image: url(../pieces/0/CHESS_qdt45.svg);
+}
+.white-perspective .black.r {
+    background-image: url(../pieces/0/CHESS_rdt45.svg);
+}
+.white-perspective .black.b {
+    background-image: url(../pieces/0/CHESS_bdt45.svg);
+}
+.white-perspective .black.n {
+    background-image: url(../pieces/0/CHESS_ndt45.svg);
+}
+.white-perspective .black.p {
+    background-image: url(../pieces/0/CHESS_pdt45.svg);
+}
+
+.black-perspective .black.k {
+    background-image: url(../pieces/0/CHESS_kdt45r.svg);
+}
+.black-perspective .black.q {
+    background-image: url(../pieces/0/CHESS_qdt45r.svg);
+}
+.black-perspective .black.r {
+    background-image: url(../pieces/0/CHESS_rdt45r.svg);
+}
+.black-perspective .black.b {
+    background-image: url(../pieces/0/CHESS_bdt45r.svg);
+}
+.black-perspective .black.n {
+    background-image: url(../pieces/0/CHESS_ndt45r.svg);
+}
+.black-perspective .black.p {
+    background-image: url(../pieces/0/CHESS_pdt45r.svg);
+}
+
+.white-perspective .white.K {
+    background-image: url(../pieces/0/CHESS_klt45.svg);
+}
+.white-perspective .white.Q {
+    background-image: url(../pieces/0/CHESS_qlt45.svg);
+}
+.white-perspective .white.R {
+    background-image: url(../pieces/0/CHESS_rlt45.svg);
+}
+.white-perspective .white.B {
+    background-image: url(../pieces/0/CHESS_blt45.svg);
+}
+.white-perspective .white.N {
+    background-image: url(../pieces/0/CHESS_nlt45.svg);
+}
+.white-perspective .white.P {
+    background-image: url(../pieces/0/CHESS_plt45.svg);
+}
+
+.black-perspective .white.K {
+    background-image: url(../pieces/0/CHESS_klt45r.svg);
+}
+.black-perspective .white.Q {
+    background-image: url(../pieces/0/CHESS_qlt45r.svg);
+}
+.black-perspective .white.R {
+    background-image: url(../pieces/0/CHESS_rlt45r.svg);
+}
+.black-perspective .white.B {
+    background-image: url(../pieces/0/CHESS_blt45r.svg);
+}
+.black-perspective .white.N {
+    background-image: url(../pieces/0/CHESS_nlt45r.svg);
+}
+.black-perspective .white.P {
+    background-image: url(../pieces/0/CHESS_plt45r.svg);
+}
