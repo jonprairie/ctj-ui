@@ -1,6 +1,6 @@
 (asdf:defsystem #:ctj-ui
   :name "Chess: The Journey UI"
-  :depends-on (:ctj :clog :spinneret :alexandria :serapeum :str :queen)
+  :depends-on (:ctj :clog :spinneret :alexandria :serapeum :str :queen :cl-uci)
   :pathname "src/"
   :serial t
   :components

@@ -19,13 +19,18 @@
 ;; do i have to save the store back to the connection after ,@body?
 ;; i don't _think_ so, since it should just be a pointer to the same object, not a copy.
 (defmacro with-store (obj &body body)
-  `(let ((bknr.datastore::*store* (connection-data-item ,obj :store)))
-     (when (null (connection-data-item ,obj :store-lock))
-       (setf (connection-data-item ,obj :store-lock) t)
-       (prog1
-	   ,@body
-	 (setf (connection-data-item ,obj :store) bknr.datastore::*store*)
-	 (setf (connection-data-item ,obj :store-lock) nil)))))
+  `(let ((bknr.datastore::*store* (connection-data-item ,obj "store")))
+     (if (null (connection-data-item ,obj "store-lock"))
+	 (progn
+	   (setf (connection-data-item ,obj "store-lock") t)
+	   (prog1
+	       (unwind-protect
+		    (progn
+		      ,@body)
+		 (setf (connection-data-item ,obj "store-lock") nil))
+	     ;; (setf (connection-data-item ,obj :store) bknr.datastore::*store*)
+	     (setf (connection-data-item ,obj "store-lock") nil)))
+	 (error "concurrent access to store"))))
 
 (defmacro define-screen (screen-name widgets &body body)
   (let ((render-name (symbolicate 'RENDER- screen-name)))

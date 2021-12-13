@@ -79,3 +79,9 @@
 .black-perspective .white.P {
     background-image: url(../pieces/0/CHESS_plt45r.svg);
 }
+
+.white-perspective .rotate-with-board {}
+
+.black-perspective .rotate-with-board {
+    transform: rotate(180deg);
+}

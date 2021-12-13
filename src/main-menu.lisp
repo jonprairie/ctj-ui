@@ -13,14 +13,22 @@
 
 (defun on-click-continue (obj)
   (setf (connection-data-item obj :screen) :game-menu)
+  (with-store obj (bknr.datastore:close-store))
+  (setf (connection-data-item obj "store") nil)
   (print "loading")
-  (with-store obj (ui::load-game "test"))
+  (with-store obj
+    (ui::load-game "test")
+    (setf (connection-data-item obj "store") bknr.datastore::*store*))
   (render-screen obj))
 
 (defun on-click-newgame (obj)
   (setf (connection-data-item obj :screen) :game-menu)
-  (print "loading")
-  (with-store obj (ui::new-game "test"))
+  (with-store obj (bknr.datastore:close-store))
+  (setf (connection-data-item obj "store") nil)
+  (print "new game")
+  (with-store obj
+    (ui::new-game "test" 10)
+    (setf (connection-data-item obj "store") bknr.datastore::*store*))
   (render-screen obj))
 
 (defun on-click-loadgame (obj))
