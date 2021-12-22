@@ -1,9 +1,38 @@
-game_over = false;
-dragging = null;
-drag_piece = null;
-move_color = "white"
-white_human = true;
-black_human = false;
+var game_over = false;
+var dragging = null;
+var drag_piece = null;
+var move_color = "white"
+var white_human = true;
+var black_human = false;
+var white_clock = 0;
+var black_clock = 0;
+var last_move_timestamp = 0;
+var clock_running = false;
+var second = 1000;
+var minute = 60 * second;
+var hour = 60 * minute;
+clearInterval(clock_interval);
+var clock_interval = null;
+
+function leftPad (s, c, n) {
+    s = String(s);
+    var times = n - s.length;
+    if (times > 0) {
+	for(var i = 0; i < times; i++) {
+	    s = c + s;
+	}
+    }
+    return s;
+}
+
+function getClockString(ms) {
+    var hours = Math.floor(ms / hour);
+    ms = ms - hours * hour;
+    var minutes = Math.floor(ms / minute);
+    ms = ms - minutes * minute;
+    var seconds = Math.floor (ms / second);
+    return leftPad(hours, '0', 2) + ':' + leftPad(minutes, '0', 2) + ':' + leftPad(seconds, '0', 2);
+}
 
 function onInitGame(ev) {
     game_over = false;
@@ -11,13 +40,53 @@ function onInitGame(ev) {
     drag_piece = null;
     move_color = "white";
     white_human = ev.white.type == "HUMAN";
+
     black_human = ev.black.type == "HUMAN";
+    white_clock = ev.wtime;
+    black_clock = ev.btime;
+
+    var wClockHtml = $("#whiteclock");
+
+    var bClockHtml = $("#blackclock");
+    var clockTime = new Date(white_clock);
+    var clockHtml = getClockString(clockTime);
+    wClockHtml.html(clockHtml);
+    bClockHtml.html(clockHtml);
 
     $('#event').prepend(ev.event);
     $('#white-player').prepend(ev.white.name);
     $('#black-player').prepend(ev.black.name);
     if (!white_human && black_human) {
 	$('#flip').click();
+    }
+    if (white_human) {
+	$('#WHITERESIGN').prepend("Resign");
+    }
+    if (black_human) {
+	$('#BLACKRESIGN').prepend("Resign");
+    }
+}
+
+function updateClock() {
+    if (clock_running) {
+	var now = Date.now();
+	var clockTime = move_color === "white" ? white_clock : black_clock;
+	var otherClockTime = move_color === "white" ? black_clock : white_clock;
+	var newClockTime = clockTime - (now - last_move_timestamp);
+	if (newClockTime < 0) newClockTime = 0;
+	var clockInnerHtml = getClockString(newClockTime);
+	var otherClockInnerHtml = getClockString(otherClockTime);
+	var clockId = '#' + move_color + 'clock';
+	var otherClockId = '#' + (move_color === "white" ? "black" : "white") + 'clock';
+
+	$(clockId).html(clockInnerHtml);
+	$(otherClockId).html(otherClockInnerHtml);
+
+	console.log(newClockTime);
+	if (newClockTime <= 0 && !game_over) {
+	    console.log("lost on time");
+	    $('#board').trigger({ type: "attemptloseontime", playerColor: move_color});
+	}
     }
 }
 
@@ -126,15 +195,53 @@ function onMakeMove(ev) {
 	$(pieceId).removeClass("P p");
     }
 
-    if (ev.isCheckmate) {
-	winner = ev.whiteToMove ? "White" : "Black";
-	$('#end-of-game-footer').prepend(`Checkmate! ${winner} wins!`);
+    move_color = ev.isWhiteToMove ? "black" : "white";
+
+    clock_running = true;
+    console.log(white_clock);
+    white_clock = ev.whiteClock;
+    console.log(white_clock);
+    console.log(black_clock);
+    black_clock = ev.blackClock;
+    console.log(black_clock);
+    last_move_timestamp = ev.timeAtMove;
+}
+
+function onGameOver(ev) {
+    var winner = "";
+    var loser = "";
+    var resolution = "";
+    var text = "";
+    var clock_running = false;
+    console.log(ev);
+    if (ev.gameResult == "whitewin") {
+	winner = "White";
+	loser = "Black";
+    } else if (ev.gameResult == "blackwin") {
+	winner = "Black";
+	loser = "White";
+    } else if (ev.gameResult == "draw") {
+	winner = "Draw";
+    } else {}
+
+    if (ev.resolution == "checkmate") {
+	text = `Checkmate! ${winner} wins!`;
+    } else if (ev.resolution == "resigns") {
+	text = `${loser} resigns! ${winner} wins!`;
+    } else if (ev.resolution == "time") {
+	if (ev.gameResult == "draw") {
+	    text = "Insufficient Material! Game Drawn!";
+	} else {
+	    text = `${loser} lost on time! ${winner} wins!`;
+	}
+    } else if (ev.resolution == "draw") {
+	text = "Game Drawn!";
+    }
+
+    if (text) {
+	clearInterval(clock_interval);
+	$('#end-of-game-footer').prepend(text);
 	game_over = true;
-    } else if (ev.isDraw) {
-	$('#end-of-game-footer').prepend('Draw! Game over!');
-	game_over = true;
-    } else {
-	move_color = ev.isWhiteToMove ? "black" : "white";
     }
 }
 
@@ -173,4 +280,7 @@ $(function () {
     $('#board').on("makemove", onMakeMove);
     $('#board').on("attemptpromote", onAttemptPromote);
     $('#board').on("invalidmove", onInvalidMove);
+    $('#board').on("gameover", onGameOver);
+    $('#board').on("makemove", $("move-pane").prop("addMove"));
+    clock_interval = setInterval(updateClock,100);
 });

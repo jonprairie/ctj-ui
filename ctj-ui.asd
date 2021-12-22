@@ -1,6 +1,6 @@
 (asdf:defsystem #:ctj-ui
   :name "Chess: The Journey UI"
-  :depends-on (:ctj :clog :spinneret :alexandria :serapeum :str :queen :cl-uci)
+  :depends-on (:ctj :clog :spinneret :alexandria :serapeum :str :queen :cl-uci :defclass-std)
   :pathname "src/"
   :serial t
   :components
@@ -11,4 +11,5 @@
    (:file "mail-inbox")
    (:file "player-table")
    (:file "chess-game")
-   (:file "tournament-table")))
+   (:file "tournament-table")
+   (:file "player-tournament-table")))

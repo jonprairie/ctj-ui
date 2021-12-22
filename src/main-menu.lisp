@@ -13,22 +13,30 @@
 
 (defun on-click-continue (obj)
   (setf (connection-data-item obj :screen) :game-menu)
-  (with-store obj (bknr.datastore:close-store))
+  (with-store obj
+    (when (and bknr.datastore::*store*
+	       (bknr.datastore::store-transaction-log-stream bknr.datastore::*store*))
+      (bknr.datastore::close-transaction-log-stream bknr.datastore::*store*))
+    (ui::new-game "test" *settings* 6)
+    (setf (connection-data-item obj "store") bknr.datastore::*store*))
   (setf (connection-data-item obj "store") nil)
   (print "loading")
   (with-store obj
     (ui::load-game "test")
-    (setf (connection-data-item obj "store") bknr.datastore::*store*))
+    (setf (connection-data-item obj "store") bknr.datastore::*store*)
+    (setf *store-link* bknr.datastore::*store*))
   (render-screen obj))
 
 (defun on-click-newgame (obj)
   (setf (connection-data-item obj :screen) :game-menu)
-  (with-store obj (bknr.datastore:close-store))
-  (setf (connection-data-item obj "store") nil)
   (print "new game")
   (with-store obj
-    (ui::new-game "test" 10)
-    (setf (connection-data-item obj "store") bknr.datastore::*store*))
+    (when (and bknr.datastore::*store*
+	       (bknr.datastore::store-transaction-log-stream bknr.datastore::*store*))
+      (bknr.datastore::close-transaction-log-stream bknr.datastore::*store*))
+    (ui::new-game "test" *settings* 6)
+    (setf (connection-data-item obj "store") bknr.datastore::*store*)
+    (setf *store-link* bknr.datastore::*store*))
   (render-screen obj))
 
 (defun on-click-loadgame (obj))

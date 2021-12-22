@@ -50,17 +50,74 @@
    :static-root (merge-pathnames "C:/Users/jonnyp/quicklisp/local-projects/ctj-ui/assets/"))
   (open-browser))
 
+(defclass-std:defclass/std settings () 
+  ((first-name last-name rating in-game-rating difficulty time-control)))
+
+(defparameter *settings* nil)
+
 (defun on-new-window (body)
   (setf *body* body)
   (setf (connection-data-item body :body) body)
   (setf (connection-data-item body :screen) :main-menu)
+  (setf *settings* (list :first-name "Perry"
+			 :last-name "Lark"
+			 :rating 1900
+			 :in-game-rating 2550))
   (render-screen body)
   (run body))
+
+(eval-when (:compile-toplevel)
+  (defun remove-dbl-quotes (s)
+    (str:replace-all "\"" "" s))
+
+  (defparameter *js-events* (make-hash-table)))
+
+(defmacro define-event (name props)
+  `(setf (gethash (quote ,(symbolicate name)) *js-events*)
+	 (cons (format nil "+ JSON.stringify(~a)"
+		       (remove-dbl-quotes
+			(jonathan:to-json
+			 (loop for prop in (quote ,props)
+			       collect
+			       (let ((sym (symbolicate (cl-change-case:camel-case (string prop)))))
+				 (cons sym
+				       (format nil "e.~a" sym))))
+			 :from :alist)))
+	       (lambda (data)
+		 (jonathan:parse data)))))
+
+(defmacro define-handler (name id &body body)
+  (let ((attach-name (symbolicate "ATTACH-" (if id (str:concat (str:upcase id) "-") "") (str:upcase name)))
+	(handle-name (symbolicate "HANDLE-" (if id (str:concat (str:upcase id) "-") "") (str:upcase name))))
+    (with-gensyms (event-data ele d)
+      `(progn
+	 (defun ,handle-name ,(if id `(obj data) `(data))
+	   (progn ,@body))
+	 (defun ,attach-name ()
+	   (let ((,event-data (gethash (quote ,(symbolicate name)) *js-events*))
+		 (,ele ,(if id
+			    `(attach-as-child *body* ,id)
+			    `(window *body*))))
+	     (clog::set-event
+	      ,ele ,name
+	      (lambda (,d)
+		,(if id
+		     `(,handle-name ,ele (funcall (cdr ,event-data) ,d))
+		     `(,handle-name (funcall (cdr ,event-data) ,d))))
+	      :call-back-script (car ,event-data))))))))
+
+(defparameter *store-link* nil)
+
+(defun clean-up-window (data)
+  (when (and *store-link* (bknr.datastore::store-transaction-log-stream *store-link*))
+    (bknr.datastore::close-transaction-log-stream *store-link*)))
 
 (defun render-screen (obj)
   (let* ((body (connection-data-item obj :body))
 	 (screen-name (connection-data-item obj :screen))
 	 (render (gethash screen-name *screens*)))
+    (js-execute obj "$(window).off();")
+    (set-on-before-unload (window *body*) #'clean-up-window)
     (funcall render body)))
 
 (defun on-click-back (obj)
