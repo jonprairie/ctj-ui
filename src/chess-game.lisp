@@ -8,7 +8,7 @@
   (with-onclick (back whiteresign blackresign) body
     (:link :rel "stylesheet" :href "css/chess-game.css")
     (:script :src "https://code.jquery.com/ui/1.13.0/jquery-ui.js")
-    (:style "body {overflow:hidden;}")
+    (:style "body {overflow:scroll;}")
     (:style ".invisible {display:none;}")
     (:style "#dragging-piece {position:absolute; z-index:6;}")
     (:style ".flip {transform:rotate(180deg);}")
@@ -448,6 +448,10 @@
 (defun build-js-player-obj (pl)
   (list :|name| (escape-string-for-eval (state-query::player-name pl))
 	:|rating| (state-query::rating pl)
+	:|score| (serapeum:mvlet ((score num (state-query::get-player-tournament-score
+					      (state-query::event (connection-data-item *body* "current-chess-game"))
+					      pl)))
+		   (format nil "~a/~a" score num))
 	:|type| (state-query::player-type pl)))
 
 (defun build-js-initgame-event (game)

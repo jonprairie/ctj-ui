@@ -53,9 +53,12 @@ function onInitGame(ev) {
     wClockHtml.html(clockHtml);
     bClockHtml.html(clockHtml);
 
+    wname = ev.white.name + '     ' + ev.white.score;
+    bname = ev.black.name + '     ' + ev.black.score;
+
     $('#event').prepend(ev.event);
-    $('#white-player').prepend(ev.white.name);
-    $('#black-player').prepend(ev.black.name);
+    $('#white-player').prepend(wname);
+    $('#black-player').prepend(bname);
     if (!white_human && black_human) {
 	$('#flip').click();
     }
