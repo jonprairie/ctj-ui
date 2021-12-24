@@ -185,9 +185,14 @@
 
 (defun clean-engines ()
   (when white-engine
-    (cl-uci:stop-engine-server white-engine))
+    (clean-engine white-engine))
   (when black-engine
-    (cl-uci:stop-engine-server black-engine)))
+    (clean-engine black-engine)))
+
+(defun clean-engine (engine)
+  (handler-case
+      (when engine (cl-uci:stop-engine-server engine))
+    (error () (uiop:terminate-process (cl-uci::server-process engine) :urgent t))))
 
 (defun setup-pieces-from-game (obj)
   (let* ((board (attach-as-child obj "board"))
