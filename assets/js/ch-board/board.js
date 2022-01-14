@@ -243,6 +243,7 @@ customElements.define('ch-board', class extends HTMLElement {
 		console.log("unclicked piece: " + th.clicked_piece.classList);
 		$(th).trigger({
 		    type: "attemptmove",
+		    gameId: th.id ? th.id : null,
 		    fromSquare: th.clicked_square.id,
 		    toSquare: ev.target.id,
 		    promote: ""
@@ -273,6 +274,7 @@ customElements.define('ch-board', class extends HTMLElement {
 	    console.log("attempting move: " + ev.fromSquare + ev.toSquare);
 	    $(th).trigger({
 		type: "makemove",
+		gameId: ev.gameId,
 		fromSquare: ev.fromSquare,
 		toSquare: ev.toSquare,
 		isCapture: false,
