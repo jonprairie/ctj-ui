@@ -30,6 +30,18 @@ customElements.define('ch-board', class extends HTMLElement {
 	}
     }
 
+    get moveColor() {
+	return this.getAttribute("move-color");
+    }
+
+    set moveColor(val) {
+	if(val) {
+	    this.setAttribute("move-color", val);
+	} else {
+	    this.setAttribute("white");
+	}
+    }
+
     get playable() {
 	return this.hasAttribute("playable");
     }
@@ -130,8 +142,8 @@ customElements.define('ch-board', class extends HTMLElement {
 
     isPickUpPiece(piece) {
 	return piece && this.playable && !this.game_over &&
-	    ((piece.classList.contains("white") && this.move_color == "white" && this.whiteHuman)
-	     || (piece.classList.contains("black") && this.move_color == "black" && this.blackHuman));
+	    ((piece.classList.contains("white") && this.moveColor == "white" && this.whiteHuman)
+	     || (piece.classList.contains("black") && this.moveColor == "black" && this.blackHuman));
     }
 
     resizeMousePiece() {
@@ -173,6 +185,9 @@ customElements.define('ch-board', class extends HTMLElement {
 	this.whiteHuman = this.whiteHuman;
 	this.blackHuman = this.blackHuman;
 	this.resizeMousePiece();
+	if (!this.moveColor) {
+	    this.moveColor = "white";
+	}
     }
 
     constructor() {
@@ -181,7 +196,6 @@ customElements.define('ch-board', class extends HTMLElement {
 	this.clicked_piece = null;
 	this.clicked_square = null;
 	this.game_over = false;
-	this.move_color = "white"; // set this as html attribute
 
 	const shadowRoot = this.attachShadow({mode: 'open'});
 	shadowRoot.innerHTML = `
@@ -281,13 +295,13 @@ customElements.define('ch-board', class extends HTMLElement {
 	    $(window).trigger("mouseup");
 
 	    if (ev.isCastleK) {
-		if (this.move_color == "white") {
+		if (this.moveColor == "white") {
 		    this.movePieceOnSquare("h1", "f1");
 		} else {
 		    this.movePieceOnSquare("h8", "f8");
 		}
 	    } else if(ev.isCastleQ) {
-		if (this.move_color == "white") {
+		if (this.moveColor == "white") {
 		    this.movePieceOnSquare("a1", "d1");
 		} else {
 		    this.movePieceOnSquare("a8", "d8");
@@ -299,7 +313,7 @@ customElements.define('ch-board', class extends HTMLElement {
 		$(pieceId).removeClass("P p");
 	    }
 
-	    this.move_color = this.move_color == "white" ? "black" : "white";
+	    this.moveColor = this.moveColor == "white" ? "black" : "white";
 	}
 
 	function onWindowMouseUp (ev) {
@@ -326,7 +340,7 @@ customElements.define('ch-board', class extends HTMLElement {
 	$(this).on("resize", onBoardResize);
 	$(this).on("attemptmove", onAttemptMove);
 	$(this).on("makemove", onMakeMove);
+
     }
 
 });
-
