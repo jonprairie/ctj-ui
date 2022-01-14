@@ -148,41 +148,42 @@ customElements.define('ch-clock', class extends HTMLElement {
 	this.whiteToMove = !this.whiteToMove;
     }
 
-    // add sync method to sync clock with authoritative clock (on backend or wherever it exists)
+    // todo: add sync method to sync clock with authoritative clock (on backend or wherever it exists)
 
-    // add increment functionality
+    // todo: add increment functionality
     
     connectedCallback() {
-	this.whiteTime = this.whiteTime;
-	this.blackTime = this.blackTime;
-	this.gameId = this.gameId;
-	this.live_white_time = this.whiteTime;
-	this.live_black_time = this.blackTime;
-	if (! (this.running || this.paused)) {
-	    this.paused = true;
-	} else {
-	    this.running = this.running;
-	    this.paused = this.paused;
-	}
-	if (! (this.whiteToMove || this.blackToMove)) {
-	    this.whiteToMove = true;
-	} else {
-	    this.whiteToMove = this.whiteToMove;
-	}
+	let th = this;
+	$(function () {
+	    th.whiteTime = th.whiteTime;
+	    th.blackTime = th.blackTime;
+	    th.gameId = th.gameId;
+	    th.live_white_time = th.whiteTime;
+	    th.live_black_time = th.blackTime;
+	    if (! (th.running || th.paused)) {
+		th.paused = true;
+	    } else {
+		th.running = th.running;
+		th.paused = th.paused;
+	    }
+	    if (! (th.whiteToMove || th.blackToMove)) {
+		th.whiteToMove = true;
+	    } else {
+		th.whiteToMove = th.whiteToMove;
+	    }
 
-	if (this.running) this.clockRun();
+	    if (th.running) th.clockRun();
 
-	this.white_clock_view = $('#'+this.gameId+'-white-clock')
-	this.black_clock_view = $('#'+this.gameId+'-black-clock')
+	    th.white_clock_view = $('#'+th.gameId+'-white-clock')
+	    th.black_clock_view = $('#'+th.gameId+'-black-clock')
 
-	// should make custom clock-view components. doing it like this only works if the ch-clock is loaded
-	// in the document _after_ the views.
-	if (this.white_clock_view.length > 0) {
-	    this.white_clock_view.html(this.msToString(this.live_white_time));
-	}
-	if (this.black_clock_view.length > 0) {
-	    this.black_clock_view.html(this.msToString(this.live_black_time));
-	}
+	    if (th.white_clock_view.length > 0) {
+		th.white_clock_view.html(th.msToString(th.live_white_time));
+	    }
+	    if (th.black_clock_view.length > 0) {
+		th.black_clock_view.html(th.msToString(th.live_black_time));
+	    }
+	});
     }
     
     constructor () {
