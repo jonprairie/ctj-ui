@@ -280,9 +280,11 @@ customElements.define('ch-board', class extends HTMLElement {
 		isCapture: false,
 		isCastleK: false,
 		isCastleQ: false,
-		isWhiteToMove: false,
+		isWhiteToMove: this.moveColor == "white",
 		isPromote: false,
-		promotePiece: null
+		promotePiece: null,
+		fullMove: 1,
+		san: ev.fromSquare + ev.toSquare
 	    });
 	}
 

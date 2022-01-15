@@ -1,0 +1,17 @@
+ch-moves {
+    background-color: gray;
+    min-width: 200px;
+    max-width: 200px;
+}
+
+ch-moves > .num {
+    background-color: lightgray;
+}
+
+ch-moves > .move:hover {
+    background-color: orange;
+}
+
+ch-moves > .curr {
+    background-color: darkorange;
+}

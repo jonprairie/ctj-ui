@@ -7,51 +7,6 @@
     cursor: pointer;
 }
 
-move-pane {
-    background-color: gray;
-    display: flex;
-    flex-flow: row wrap;
-    overflow: hidden;
-    max-width: 200px;
-    min-width: 200px;
-    align-items: flex-start;
-    align-content: flex-start;
-}
-
-move-pane > div.san {
-    width: 70px;
-    padding-left: 15px;
-    height: 25px;
-    text-align: center;
-    font-size: 17px;
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: left;
-    align-items: center;
-    cursor: pointer;
-}
-
-move-pane > div.num {
-    background-color: lightgray;
-    width: 30px;
-    height: 25px;
-    text-align: center;
-    font-size: 15px;
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: center;
-    align-items: center;
-}
-
-move-pane > div.san::hover {
-    background-color: orange;
-}
-
-
-move-pane > div.curr {
-    background-color: darkorange;
-}
-
 .white-perspective {}
 
 .black-perspective {
