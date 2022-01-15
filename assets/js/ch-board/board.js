@@ -177,17 +177,20 @@ customElements.define('ch-board', class extends HTMLElement {
     }
 
     connectedCallback() {
-	if(!this.hasAttribute('fen')) {
-	    this.fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
-	}
-	this.setPosition();
-	this.flip = this.flip;
-	this.whiteHuman = this.whiteHuman;
-	this.blackHuman = this.blackHuman;
-	this.resizeMousePiece();
-	if (!this.moveColor) {
-	    this.moveColor = "white";
-	}
+	let th = this;
+	$(function () {
+	    if(!th.hasAttribute('fen')) {
+		th.fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+	    }
+	    th.setPosition();
+	    th.flip = th.flip;
+	    th.whiteHuman = th.whiteHuman;
+	    th.blackHuman = th.blackHuman;
+	    th.resizeMousePiece();
+	    if (!th.moveColor) {
+		th.moveColor = "white";
+	    }
+	});
     }
 
     constructor() {
